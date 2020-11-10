@@ -1,0 +1,2 @@
+# BodyBot
+Discord Workout Bot
