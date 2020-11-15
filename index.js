@@ -2,6 +2,7 @@ const INFO = require('./info.json');
 const Discord = require('discord.js');
 const bot = new Discord.Client();
 const TOKEN = INFO["BOT_TOKEN"];
+var commList = ['ping', 'time']
 
 bot.on('ready', () => {
   var d = new Date();
@@ -11,7 +12,7 @@ bot.on('ready', () => {
 });
 
 bot.on('message', msg => {
-  if (msg.author == bot.user){
+  if (msg.author == bot.user || msg.content.charAt(0) != '!') {
     return
   } else {
     processCommand(msg);
@@ -22,20 +23,31 @@ function processCommand(receivedMessage) {
   let fullCommand = receivedMessage.content.substr(1)
   let splitCommand = fullCommand.split(" ");
   let primeCom = splitCommand[0];
-  if (primeCom == 'ping') {
-    ping(receivedMessage);
-  } else {
-    receivedMessage.reply('I did not understand what you said...');
+  
+  switch (primeCom){
+    case 'ping':
+      baseComms(receivedMessage);
+    case 'time':
+      baseComms(receivedMessage);
   }
 };
-function ping(message) {
+function baseComms(message) {
   if (message.content == '!ping') {
     message.reply('Pong');
     var now = new Date();
     var timeRn = now.getHours() + ":" + now.getMinutes() + ":" + now.getSeconds();
     console.log(`Ping responded to at ${timeRn}`);
+  } else if (message.content == '!time') {
+    var rn = new Date();
+    var rightNow = rn.getHours() + ":" + rn.getMinutes() + ":" + rn.getSeconds();
+    message.reply(`The time is ${rightNow}`);
+    if (rn.getHours() >= 20 || rn.getHours() <= 5) {
+      message.channel.send("You should get some rest");
+    } else {
+      message.channel.send("Hope you're having a great day");
+    }
   } else {
-    console.log('Message not understood')
+    console.log('Message not understood');
   }
 };
 
