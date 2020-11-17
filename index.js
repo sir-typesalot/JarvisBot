@@ -1,4 +1,5 @@
 const INFO = require('./info.json');
+const timer = require('./src/pomodor.js');
 const Discord = require('discord.js');
 const bot = new Discord.Client();
 const TOKEN = INFO["BOT_TOKEN"];
@@ -35,6 +36,7 @@ function processCommand(receivedMessage) {
       postLink(receivedMessage);
     case 'pomodor':
       console.log(`Pomodor for ${splitCommand[1]} minutes`);
+      timer.tracker(receivedMessage, splitCommand[1]);
       break;
   }
 };
