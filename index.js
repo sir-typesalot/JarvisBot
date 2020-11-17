@@ -27,8 +27,13 @@ function processCommand(receivedMessage) {
   switch (primeCom){
     case 'ping':
       baseComms(receivedMessage);
+      break;
     case 'time':
       baseComms(receivedMessage);
+      break;
+    case 'ideas':
+      postLink(receivedMessage);
+      break;
   }
 };
 function baseComms(message) {
@@ -48,6 +53,14 @@ function baseComms(message) {
     }
   } else {
     console.log('Message not understood');
+  }
+};
+
+function postLink(message) {
+  if (message.content == '!ideas') {
+    let link = 'https://www.mensjournal.com/health-fitness/top-workout-routines-according-science/'
+    message.reply(`Here is a link ${link}`);
+    console.log('Sent link');
   }
 };
 
