@@ -33,6 +33,8 @@ function processCommand(receivedMessage) {
       break;
     case 'ideas':
       postLink(receivedMessage);
+    case 'pomodor':
+      console.log(`Pomodor for ${splitCommand[1]} minutes`);
       break;
   }
 };
