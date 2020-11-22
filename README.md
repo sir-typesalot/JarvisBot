@@ -1,2 +1,2 @@
-# BodyBot
-Discord Workout Bot
+# JarvisBot
+Mutlifunctional Discord Server Bot
