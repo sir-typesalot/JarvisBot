@@ -1,5 +1,5 @@
 {
-  "name": "BodyBot",
+  "name": "JarvisBot",
   "version": "1.0.0",
   "description": "BodyBot for WorkoutHub server",
   "main": "index.js",
