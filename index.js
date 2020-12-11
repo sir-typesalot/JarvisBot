@@ -58,6 +58,8 @@ function baseComms(message) {
     } else {
       message.channel.send("Hope you're having a great day");
     }
+  } else if (message.content == '!stocks'){
+    pass
   } else {
     console.log('Message not understood');
   }
