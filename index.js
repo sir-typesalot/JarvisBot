@@ -1,4 +1,5 @@
 const INFO = require('./info.json');
+const clock = require('./src/pomodor.js');
 const Discord = require('discord.js');
 const bot = new Discord.Client();
 const TOKEN = INFO["BOT_TOKEN"];
@@ -26,13 +27,19 @@ function processCommand(receivedMessage) {
   
   switch (primeCom){
     case 'ping':
+      console.log(`command invoked: ${primeCom}`);
       baseComms(receivedMessage);
       break;
     case 'time':
+      console.log(`command invoked: ${primeCom}`);
       baseComms(receivedMessage);
       break;
     case 'ideas':
+      console.log(`command invoked: ${primeCom}`);
       postLink(receivedMessage);
+    case 'pomodor':
+      console.log(`command invoked: ${primeCom}`);
+      clock.t.commandEval(receivedMessage, splitCommand[1]);
       break;
   }
 };
@@ -51,6 +58,8 @@ function baseComms(message) {
     } else {
       message.channel.send("Hope you're having a great day");
     }
+  } else if (message.content == '!stocks'){
+    pass
   } else {
     console.log('Message not understood');
   }
