@@ -1,5 +1,6 @@
 const INFO = require('./info.json');
 const clock = require('./src/pomodor.js');
+const math = require('./src/math.js');
 const Discord = require('discord.js');
 const bot = new Discord.Client();
 const TOKEN = INFO["BOT_TOKEN"];
@@ -30,16 +31,24 @@ function processCommand(receivedMessage) {
       console.log(`command invoked: ${primeCom}`);
       baseComms(receivedMessage);
       break;
-    case 'time':
+    case 'time': // !time
       console.log(`command invoked: ${primeCom}`);
       baseComms(receivedMessage);
       break;
     case 'ideas':
       console.log(`command invoked: ${primeCom}`);
       postLink(receivedMessage);
-    case 'pomodor':
+    case 'pomodor': // !pomodor 20
       console.log(`command invoked: ${primeCom}`);
       clock.t.commandEval(receivedMessage, splitCommand[1]);
+      break;
+    case 'add': // !add x + y
+      console.log(`command invoked: ${primeCom}`);
+      math.calc.commandEval(receivedMessage, splitCommand);
+      break;
+    case 'minus': //!minus x - y
+      console.log(`command invoked: ${primeCom}`);
+      math.calc.commandEval(receivedMessage, splitCommand);
       break;
   }
 };
