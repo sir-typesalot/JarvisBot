@@ -1,10 +1,11 @@
 const INFO = require('./info.json');
 const clock = require('./src/pomodor.js');
 const math = require('./src/math.js');
+const TOKEN = INFO["BOT_TOKEN"];
+
 const Discord = require('discord.js');
 const bot = new Discord.Client();
-const TOKEN = INFO["BOT_TOKEN"];
-var commList = ['ping', 'time']
+
 
 bot.on('ready', () => {
   var d = new Date();
@@ -27,13 +28,21 @@ function processCommand(receivedMessage) {
   let primeCom = splitCommand[0];
   
   switch (primeCom){
-    case 'ping':
+    case 'ping': // !ping
       console.log(`command invoked: ${primeCom}`);
       baseComms(receivedMessage);
+      break;
+    case 'help': // !help 
+      console.log(`command invoked: ${primeCom}`);
+      helpFunc(receivedMessage);
       break;
     case 'time': // !time
       console.log(`command invoked: ${primeCom}`);
       baseComms(receivedMessage);
+      break;
+    case 'heads': // !heads
+      console.log(`command invoked ${primeCom}`);
+      math.calc.commandEval(receivedMessage, splitCommand);
       break;
     case 'ideas':
       console.log(`command invoked: ${primeCom}`);
@@ -67,8 +76,6 @@ function baseComms(message) {
     } else {
       message.channel.send("Hope you're having a great day");
     }
-  } else if (message.content == '!stocks'){
-    pass
   } else {
     console.log('Message not understood');
   }
@@ -80,6 +87,12 @@ function postLink(message) {
     message.reply(`Here is a link ${link}`);
     console.log('Sent link');
   }
+};
+
+const helpFunc = (message) => {
+  refLink = 'https://github.com/rshyam2/JarvisBot/wiki'
+  message.reply(`Here is a simple reference sheet ${refLink}`);
+  console.log('Sent Link to Wiki');
 };
 
 bot.login(TOKEN);

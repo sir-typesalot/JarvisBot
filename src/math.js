@@ -13,6 +13,11 @@ class Compute {
                 (final.check)? message.reply(`Please check that you have proper spacing between your numbers`): message.reply(`The result is ${final.result}`);
                 console.log(final.check)
                 break;
+            case 'heads':
+                let side = this.headsTails();
+                message.reply(`You got ${side}`);
+                console.log(`Coin flipped, got ${side}`);
+                break;
         }
     };
     simpleAdd(nums) {
@@ -53,6 +58,11 @@ class Compute {
         res.result = difference;
         res.check = isError;
         return res;
+    };
+    headsTails() {
+        let evaluator = Math.floor(Math.random() * 11);
+        let side = (evaluator % 2 == 0) ? 'Heads': 'Tails';
+        return side;
     };
 };
 module.exports = {
