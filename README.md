@@ -3,8 +3,8 @@ Simple Discord Bot with Multiple Functionalities
 
 ### Features added so far ###
 - Pomodor timer
-- Time
 - Virtual Heads or Tails
 - Simple Addition and Subtraction
+- Active Minutes scoreboard (In Progress)
 
 Many more to come over the next few months!

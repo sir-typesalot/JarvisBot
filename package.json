@@ -1,7 +1,7 @@
 {
   "name": "JarvisBot",
   "version": "1.0.0",
-  "description": "BodyBot for WorkoutHub server",
+  "description": "Multi-functional bot for discord servers",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"

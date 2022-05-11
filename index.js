@@ -34,19 +34,12 @@ function processCommand(receivedMessage) {
       break;
     case 'help': // !help 
       console.log(`command invoked: ${primeCom}`);
-      helpFunc(receivedMessage);
-      break;
-    case 'time': // !time
-      console.log(`command invoked: ${primeCom}`);
       baseComms(receivedMessage);
       break;
     case 'heads': // !heads
       console.log(`command invoked ${primeCom}`);
       math.calc.commandEval(receivedMessage, splitCommand);
       break;
-    case 'ideas':
-      console.log(`command invoked: ${primeCom}`);
-      postLink(receivedMessage);
     case 'pomodor': // !pomodor 20
       console.log(`command invoked: ${primeCom}`);
       clock.t.commandEval(receivedMessage, splitCommand[1]);
@@ -61,38 +54,24 @@ function processCommand(receivedMessage) {
       break;
   }
 };
+
+// Basic functions for the bot
 function baseComms(message) {
   if (message.content == '!ping') {
+    // Reply to message and log response time
     message.reply('Pong');
     var now = new Date();
     var timeRn = now.getHours() + ":" + now.getMinutes() + ":" + now.getSeconds();
+    // Log time
     console.log(`Ping responded to at ${timeRn}`);
-  } else if (message.content == '!time') {
-    var rn = new Date();
-    var rightNow = rn.getHours() + ":" + rn.getMinutes() + ":" + rn.getSeconds();
-    message.reply(`The time is ${rightNow}`);
-    if (rn.getHours() >= 20 || rn.getHours() <= 5) {
-      message.channel.send("You should get some rest");
-    } else {
-      message.channel.send("Hope you're having a great day");
-    }
+  } else if (message.content == '!help') {
+    // Send user link to wiki page
+    refLink = 'https://github.com/sir-typesalot/JarvisBot/wiki'
+    message.reply(`Here is a simple reference sheet ${refLink}`);
+    console.log('Sent Link to Wiki');
   } else {
     console.log('Message not understood');
   }
-};
-
-function postLink(message) {
-  if (message.content == '!ideas') {
-    let link = 'https://www.mensjournal.com/health-fitness/top-workout-routines-according-science/'
-    message.reply(`Here is a link ${link}`);
-    console.log('Sent link');
-  }
-};
-
-const helpFunc = (message) => {
-  refLink = 'https://github.com/rshyam2/JarvisBot/wiki'
-  message.reply(`Here is a simple reference sheet ${refLink}`);
-  console.log('Sent Link to Wiki');
 };
 
 bot.login(TOKEN);
