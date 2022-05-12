@@ -20,6 +20,7 @@ func Run() {
 	errorCheck(err, "Failed to load .env file")
 	// Grab token and start up bot
 	token := os.Getenv("BOT_TOKEN")
+	fmt.Println(token)
 	bot, err := discordgo.New("Bot " + token)
 	errorCheck(err, "Error authenticating bot token")
 	// In this example, we only care about receiving message events.
