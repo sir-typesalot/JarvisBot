@@ -1,10 +1,12 @@
 package bot
 
 import (
+	"math/rand"
 	"fmt"
 	"log"
 	"os"
 	"strings"
+	"time"
 
 	"github.com/bwmarrin/discordgo"
 	"github.com/joho/godotenv"
@@ -44,17 +46,20 @@ func messageHandler(session *discordgo.Session, message *discordgo.MessageCreate
 		return
 	}
 	// Will likely need to cut message into parts sep=" " so that we can find the first command
+	join_comm := strings.Join(command[:], "")
+	split_command := strings.Split(join_comm, " ")
+	// fmt.Println(split_command)
 	// If check passes, try to process message
-	switch message.Content {
+	switch split_command[0] {
 	case "!ping":
-		// Send reply to user so they are tagged
-		sendMessage(session, message, "pong")
+		reply := replyPing(split_command)
+		sendMessage(session, message, reply)
 	case "!help":
-		// Send reply to user so they are tagged
-		sendMessage(session, message, "pong")
+		reply := sendHelp(split_command)
+		sendMessage(session, message, reply)
 	case "!heads":
-		// Send reply to user so they are tagged
-		sendMessage(session, message, "pong")
+		reply := headsTails(split_command)
+		sendMessage(session, message, reply)
 	case "!pomodor":
 		// Send reply to user so they are tagged
 		sendMessage(session, message, "pong")
@@ -69,8 +74,9 @@ func messageHandler(session *discordgo.Session, message *discordgo.MessageCreate
 
 // Simple function to handle the message replies
 func sendMessage(s *discordgo.Session, m *discordgo.MessageCreate, reply string) {
+	// Send reply to user message so they are tagged + ref the original message
 	_, _ = s.ChannelMessageSendReply(m.ChannelID, reply, m.Reference())
-	fmt.Print("Message sent")
+	fmt.Println("Message sent")
 }
 
 // Function to handle eror messages
@@ -80,20 +86,27 @@ func errorCheck(err error, message string) {
 	}
 }
 
-// // function baseComms(message) {
-//   if (message.content == '!ping') {
-//     // Reply to message and log response time
-//     message.reply('Pong');
-//     var now = new Date();
-//     var timeRn = now.getHours() + ":" + now.getMinutes() + ":" + now.getSeconds();
-//     // Log time
-//     console.log(`Ping responded to at ${timeRn}`);
-//   } else if (message.content == '!help') {
-//     // Send user link to wiki page
-//     refLink = 'https://github.com/sir-typesalot/JarvisBot/wiki'
-//     message.reply(`Here is a simple reference sheet ${refLink}`);
-//     console.log('Sent Link to Wiki');
-//   } else {
-//     console.log('Message not understood');
-//   }
-// };
+// BASIC COMMANDS
+// Send help link
+func sendHelp(command []string) string {
+	refLink := "https://github.com/sir-typesalot/JarvisBot/wiki"
+	reply := "Here is a simple wiki " + refLink
+	fmt.Println("Sent link to wiki")
+	return reply
+}
+// Handle !ping status commands
+func replyPing(command []string) string {
+	now := time.Now()
+	fmt.Println("Ping responded to at: ", now.Format("15:04:05"))
+	return "Pong"
+}
+// Heads Tails func
+func headsTails(command []string) string {
+	randNum := rand.Intn(50)
+	if randNum % 2 == 0 {
+		return "Heads"
+	} else {
+		return "Tails"
+	}
+}
+
