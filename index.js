@@ -3,9 +3,8 @@ const clock = require('./src/pomodor.js');
 const math = require('./src/math.js');
 const TOKEN = INFO["BOT_TOKEN"];
 
-const Discord = require('discord.js');
-const bot = new Discord.Client();
-
+const { Client, Intents } = require('discord.js');
+const bot = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES] });
 
 bot.on('ready', () => {
   var d = new Date();

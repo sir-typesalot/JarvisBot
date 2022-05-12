@@ -9,7 +9,7 @@
   "author": "Radhe Pokhrel",
   "license": "ISC",
   "dependencies": {
-    "discord.js": "^11.6.4",
-    "dotenv": "^8.2.0"
+    "discord.js": "^13.6.0",
+    "dotenv": "^16.0.1"
   }
 }
