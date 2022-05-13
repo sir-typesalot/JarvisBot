@@ -2,4 +2,4 @@
 cd ~/JarvisBot/
 echo "Compiling new executable"
 go build -o bin
-nohup bin/jarvis-bot > logfile.txt &
+nohup ./bin/jarvis-bot > logfile.txt &
