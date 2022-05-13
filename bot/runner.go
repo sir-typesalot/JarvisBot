@@ -69,6 +69,8 @@ func messageHandler(session *discordgo.Session, message *discordgo.MessageCreate
 	case "!minus":
 		// Send reply to user so they are tagged
 		sendMessage(session, message, "pong")
+	case "!stock":
+		// idk
 	}
 }
 
