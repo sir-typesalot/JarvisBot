@@ -6,4 +6,4 @@ cd ~/JarvisBot/
 echo "Pulling new changes to project"
 git stash && git pull
 echo "Restarting bot"
-sh startup.sh
+sh scripts/startup.sh
