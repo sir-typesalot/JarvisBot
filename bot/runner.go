@@ -62,8 +62,7 @@ func messageHandler(session *discordgo.Session, message *discordgo.MessageCreate
 		reply := headsTails(split_command)
 		sendMessage(session, message, reply)
 	case "!pomodor":
-		// Send reply to user so they are tagged
-		sendMessage(session, message, "pong")
+		PomodorQueue(split_command, session, message)
 	case "!add":
 		// Send reply to user so they are tagged
 		sendMessage(session, message, "pong")
@@ -81,10 +80,12 @@ func sendMessage(s *discordgo.Session, m *discordgo.MessageCreate, reply string)
 }
 
 // Function to handle eror messages
-func errorCheck(err error, message string) {
+func errorCheck(err error, message string) int {
 	if err != nil {
 		log.Fatal(message + err.Error())
+		return 401
 	}
+	return 200
 }
 
 // BASIC COMMANDS
@@ -99,15 +100,15 @@ func sendHelp(command []string) string {
 func replyPing(command []string) string {
 	now := time.Now()
 	fmt.Println("Ping responded to at: ", now.Format("15:04:05"))
-	return "Pong"
+	return "Pong :ping_pong:"
 }
 // Heads Tails func
 func headsTails(command []string) string {
 	randNum := rand.Intn(50)
 	if randNum % 2 == 0 {
-		return "Heads"
+		return "Heads :coin:"
 	} else {
-		return "Tails"
+		return "Tails :coin:"
 	}
 }
 
