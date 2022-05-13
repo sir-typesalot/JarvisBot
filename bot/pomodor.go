@@ -59,7 +59,9 @@ func PomodorQueue(command []string, session *discordgo.Session, message *discord
 				}
 				n++
 			}
-			hasCanceled = removeUser(hasCanceled, userIdx)
+			if didCancel {
+				hasCanceled = removeUser(hasCanceled, userIdx)
+			}
 		}
 	}
 }
