@@ -13,7 +13,7 @@ import (
 	"github.com/joho/godotenv"
 )
 
-// TODO: Need to parse the dates better
+// TODO: For now, just trimmed the date strings - should be a better solution
 // Format the date strings
 func ActivityQueue(command []string, author string) (response string, emoji string) {
 
@@ -71,6 +71,7 @@ func getUserInfo(url string, command []string, author string) string {
 
 	defer resp.Body.Close()
 	body, err := ioutil.ReadAll(resp.Body)
+	errorCheck(err, "Failed to read body")
 	// Unmarshal result, check for err
 	user_info := UserInfo{}
 	err = json.Unmarshal(body, &user_info)
@@ -79,7 +80,7 @@ func getUserInfo(url string, command []string, author string) string {
 	// Log output and return data as string
 	fmt.Printf("The username is %s", user_info.Data.Username)
 	reply := fmt.Sprintf(
-		"Username: %s\nUserID: %d\nRegistered: %s",
+		"**Username**: %s\n**UserID**: %d\n**Registered**: %s",
 		user_info.Data.Username, user_info.Data.ID, user_info.Data.CreateTime)
 	return reply
 }
@@ -110,6 +111,7 @@ func getUserStats(url string, command []string, author string) string {
 
 	defer resp.Body.Close()
 	body, err := ioutil.ReadAll(resp.Body)
+	errorCheck(err, "Failed to read body")
 	
 	user_info := UserInfo{}
 	err = json.Unmarshal(body, &user_info)
@@ -120,7 +122,7 @@ func getUserStats(url string, command []string, author string) string {
 	for _, row := range user_info.Data {
 		datetime_split := strings.Split(row.Date, " ")
 		date := datetime_split[:4]
-		s := fmt.Sprintf("Date: %s \tActive Minutes: %s\n", strings.Join(date, " "), row.Activity)
+		s := fmt.Sprintf("**Date**: %s **Minutes**: %s\n", strings.Join(date, " "), row.Activity)
 		reply += s
 	}
 	return reply
@@ -148,6 +150,7 @@ func getScoreboard(url string, command []string) string {
 
 	defer resp.Body.Close()
 	body, err := ioutil.ReadAll(resp.Body)
+	errorCheck(err, "Failed to read body")
 
 	user_info := UserInfo{}
 	err = json.Unmarshal(body, &user_info)
@@ -159,7 +162,7 @@ func getScoreboard(url string, command []string) string {
 
 		datetime_split := strings.Split(row.Date, " ")
 		date := datetime_split[:4]
-		s := fmt.Sprintf("User: %s Date: %s Active Minutes: %s\n\n", row.Username, strings.Join(date, " "), row.Activity)
+		s := fmt.Sprintf("**User**: %s **Date**: %s **Time**: %s\n\n", row.Username, strings.Join(date, " "), row.Activity)
 		reply += s
 	}
 	return reply
@@ -193,6 +196,7 @@ func createUser(url string, command []string, author string) (string, string) {
 
 	defer resp.Body.Close()
 	body, err := ioutil.ReadAll(resp.Body)
+	errorCheck(err, "Failed to read body")
 
 	bodyJson := RespBody{}
 	err = json.Unmarshal(body, &bodyJson)
@@ -240,6 +244,7 @@ func logActivity(url string, command []string, author string) (string, string) {
 
 	defer resp.Body.Close()
 	body, err := ioutil.ReadAll(resp.Body)
+	errorCheck(err, "Failed to read body")
 
 	// bodyString := string(body)
 	// fmt.Print(bodyString)

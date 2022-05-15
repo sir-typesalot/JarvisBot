@@ -13,7 +13,6 @@ import (
 )
 
 var BotId string
-var bot *discordgo.Session
 
 func Run() {
 	err := godotenv.Load()

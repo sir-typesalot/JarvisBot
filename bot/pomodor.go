@@ -22,7 +22,7 @@ func PomodorQueue(command []string, session *discordgo.Session, message *discord
 			sendMessage(session, message, "You cancelled your timer ", "")
 			fmt.Println("Cancelled timer")
 		} else {
-			sendMessage(session, message, "You don't have a timer... ", "<:laughingtom:975383179601010718>")
+			sendMessage(session, message, "You don't have a timer... ", "<:mrheckles:975492543892570142>")
 			fmt.Println("Non-existent timer, skipping cancellation")
 		}
 	} else {
