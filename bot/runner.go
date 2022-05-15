@@ -71,6 +71,9 @@ func messageHandler(session *discordgo.Session, message *discordgo.MessageCreate
 		sendMessage(session, message, "pong")
 	case "!stock":
 		// idk
+	case "!activity":
+		reply := ActivityQueue(split_command, message.Author.Username)
+		sendMessage(session, message, reply)
 	}
 }
 
