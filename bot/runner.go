@@ -46,6 +46,7 @@ func messageHandler(session *discordgo.Session, message *discordgo.MessageCreate
 	if message.Author.ID == BotId || command[0] != "!" {
 		return
 	}
+	
 	// Will likely need to cut message into parts sep=" " so that we can find the first command
 	join_comm := strings.Join(command[:], "")
 	split_command := strings.Split(join_comm, " ")
@@ -54,31 +55,34 @@ func messageHandler(session *discordgo.Session, message *discordgo.MessageCreate
 	switch split_command[0] {
 	case "!ping":
 		reply := replyPing(split_command)
-		sendMessage(session, message, reply)
+		sendMessage(session, message, reply, "")
 	case "!help":
 		reply := sendHelp(split_command)
-		sendMessage(session, message, reply)
+		sendMessage(session, message, reply, "")
 	case "!heads":
 		reply := headsTails(split_command)
-		sendMessage(session, message, reply)
+		sendMessage(session, message, reply, "")
 	case "!pomodor":
 		PomodorQueue(split_command, session, message)
 	case "!add":
 		// Send reply to user so they are tagged
-		sendMessage(session, message, "pong")
+		sendMessage(session, message, "pong", "")
 	case "!minus":
 		// Send reply to user so they are tagged
-		sendMessage(session, message, "pong")
+		sendMessage(session, message, "pong", "")
 	case "!stock":
 		// idk
 	case "!activity":
-		reply := ActivityQueue(split_command, message.Author.Username)
-		sendMessage(session, message, reply)
+		reply, emoji := ActivityQueue(split_command, message.Author.Username)
+		sendMessage(session, message, reply, emoji)
 	}
 }
 
 // Simple function to handle the message replies
-func sendMessage(s *discordgo.Session, m *discordgo.MessageCreate, reply string) {
+func sendMessage(s *discordgo.Session, m *discordgo.MessageCreate, reply string, emoji string) {
+	if len(emoji) > 0 {
+		reply = fmt.Sprint(reply, " ", emoji)
+	}
 	// Send reply to user message so they are tagged + ref the original message
 	_, _ = s.ChannelMessageSendReply(m.ChannelID, reply, m.Reference())
 	fmt.Println("Message sent")

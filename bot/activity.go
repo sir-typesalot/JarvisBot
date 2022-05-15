@@ -14,7 +14,7 @@ import (
 
 // TODO: Need to parse the dates better
 // Format the date strings
-func ActivityQueue(command []string, author string) (response string) {
+func ActivityQueue(command []string, author string) (response string, emoji string) {
 
 	// Load dotenv
 	err := godotenv.Load()
@@ -23,19 +23,22 @@ func ActivityQueue(command []string, author string) (response string) {
 	BASE_URL := os.Getenv("EXERCISE_API_URL")
 	// TODO: improvise the functions here, maybe create a struct with url, comm, author?
 	if len(command) < 2 {
-		return "Not enough args :laughingtom:"
+		return "Not enough args", "<:laughingtom:975383179601010718>"
 	}
 	switch command[1] {
 	case "user-info":
 		response = getUserInfo(BASE_URL, command, author)
+		emoji = ""
 	case "create-user":
-		response = createUser(BASE_URL, command, author)
+		response, emoji = createUser(BASE_URL, command, author)
 	case "log":
-		response = logActivity(BASE_URL, command, author)
+		response, emoji = logActivity(BASE_URL, command, author)
 	case "user-stats":
 		response = getUserStats(BASE_URL, command, author)
+		emoji = ""
 	case "scoreboard":
 		response = getScoreboard(BASE_URL, command)
+		emoji = ""
 	}
 	return
 }
@@ -156,7 +159,7 @@ func getScoreboard(url string, command []string) string {
 	return reply
 }
 
-func createUser(url string, command []string, author string) string {
+func createUser(url string, command []string, author string) (string, string) {
 	// Creaft response 
 	type RespBody struct {
 		Data struct {
@@ -192,20 +195,20 @@ func createUser(url string, command []string, author string) string {
 	fmt.Printf("User created with code %d\n", bodyJson.Status)
 	switch bodyJson.Status {
 	case 200:
-		s := fmt.Sprintf("Successfully created user @%s :woo_baby:", username)
-		return s
+		s := fmt.Sprintf("Successfully created user @%s ", username)
+		return s, "<:woo_baby:975382482050514955>"
 	case 300:
-		s := fmt.Sprintf("User already exists with name @%s :risitas:", username)
-		return s
+		s := fmt.Sprintf("User already exists with name @%s ", username)
+		return s, "<:risitas:975382207625584640>"
 	case 500:
-		s := "Encountered an error trying to create user, let's try again :cat_cry:"
-		return s
+		s := "Encountered an error trying to create user, let's try again "
+		return s, "<:cat_cry:975383207996456980>"
 	default:
-		return "Ran into some problems trying to create user :cat_cry:"
+		return "Ran into some problems trying to create user ", "<:cat_cry:975383207996456980>"
 	}
 }
 
-func logActivity(url string, command []string, author string) string {
+func logActivity(url string, command []string, author string) (string, string) {
 
 	type RespBody struct {
 		Status string `json:"status"`
@@ -213,7 +216,7 @@ func logActivity(url string, command []string, author string) string {
 	}
 	// Check if minutes are in command
 	if len(command) < 3 {
-		return "You forgot to add the minutes :laughingtom:"
+		return "You forgot to add the minutes ", "<:laughingtom:975383179601010718>"
 	}
 	// Convert to int
 	minutes_str := command[2]
@@ -241,8 +244,8 @@ func logActivity(url string, command []string, author string) string {
 	// Return response based on status code
 	fmt.Printf("Logged activity for user %s\n", author)
 	if bodyJson.Code == 200 {
-		return "Your records are safe with me :leo_cheers:"
+		return "Your records are safe with me ", "<:leo_cheers:975383282755715112>"
 	} else {
-		return "I didn't catch that, let's try again"
+		return "I didn't catch that, let's try again", "<:cat_cry:975383207996456980>"
 	}
 }

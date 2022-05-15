@@ -19,10 +19,10 @@ var hasCanceled = []string{}
 func PomodorQueue(command []string, session *discordgo.Session, message *discordgo.MessageCreate) {
 	if command[1] == "cancel" {
 		if status := cancelTimer(message.Author.ID); status == 200 {
-			sendMessage(session, message, "You cancelled your timer ")
+			sendMessage(session, message, "You cancelled your timer ", "")
 			fmt.Println("Cancelled timer")
 		} else {
-			sendMessage(session, message, "You don't have a timer... :rolling_eyes:")
+			sendMessage(session, message, "You don't have a timer... ", "<:laughingtom:975383179601010718>")
 			fmt.Println("Non-existent timer, skipping cancellation")
 		}
 	} else {
@@ -37,9 +37,9 @@ func PomodorQueue(command []string, session *discordgo.Session, message *discord
 		status = errorCheck(err, "Invalid cycle")
 		// Check if conversion failed
 		if status != 200 {
-			sendMessage(session, message, "Please check your timer values")
+			sendMessage(session, message, "Please check your timer values", "")
 		} else {
-			sendMessage(session, message, "Your timer has started :hourglass:")
+			sendMessage(session, message, "Your timer has started :hourglass:", "")
 			var userIdx int
 			var didCancel bool
 			// Loop through and create pomodor for time length
@@ -47,15 +47,15 @@ func PomodorQueue(command []string, session *discordgo.Session, message *discord
 			for n < cycles {
 				if didCancel, userIdx = userCancel(message.Author.ID); !didCancel {
 					createTimer(message.Author.ID, timeLength)
-					sendMessage(session, message, "Take a rest, go outside! :beach:")
+					sendMessage(session, message, "Take a rest, go outside! :beach:", "")
 				}
 				if didCancel, userIdx = userCancel(message.Author.ID); !didCancel {
 					createTimer(message.Author.ID, interval)
 				}
 				if n == (cycles - 1) {
-					sendMessage(session, message, "Timer over, nice work! :white_check_mark:")
+					sendMessage(session, message, "Timer over, nice work! :white_check_mark:", "")
 				} else {
-					sendMessage(session, message, "Interval over, back to work! :keyboard:")
+					sendMessage(session, message, "Interval over, back to work! :keyboard:", "")
 				}
 				n++
 			}
