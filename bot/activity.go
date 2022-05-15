@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"os"
 	"strconv"
+	"strings"
 
 	"github.com/joho/godotenv"
 )
@@ -117,7 +118,9 @@ func getUserStats(url string, command []string, author string) string {
 	// Format data and return as string
 	reply := "User: " + user_info.User + "\n"
 	for _, row := range user_info.Data {
-		s := fmt.Sprintf("Date: %s \tActive Minutes: %s\n", row.Date, row.Activity)
+		datetime_split := strings.Split(row.Date, " ")
+		date := datetime_split[:4]
+		s := fmt.Sprintf("Date: %s \tActive Minutes: %s\n", strings.Join(date, " "), row.Activity)
 		reply += s
 	}
 	return reply
@@ -153,7 +156,10 @@ func getScoreboard(url string, command []string) string {
 	var reply string
 	fmt.Printf("The date is %s\n", user_info.Data[0].Date)
 	for _, row := range user_info.Data {
-		s := fmt.Sprintf(":id: %s :date: %s Active Minutes: %s\n\n", row.Username, row.Date, row.Activity)
+
+		datetime_split := strings.Split(row.Date, " ")
+		date := datetime_split[:4]
+		s := fmt.Sprintf("User: %s Date: %s Active Minutes: %s\n\n", row.Username, strings.Join(date, " "), row.Activity)
 		reply += s
 	}
 	return reply
