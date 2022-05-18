@@ -89,8 +89,8 @@ func getUserInfo(url string, command []string, author string) string {
 func getUserStats(url string, command []string, author string) string {
 	// Create data structs
 	type DataRow struct {
-		Activity string `json:"activity"`
-		Date     string `json:"date"`
+		Activity string `json:"total_activity"`
+		Records  int `json:"total_records"`
 	}
 	type UserInfo struct {
 		Data []DataRow `json:"data"`
@@ -120,9 +120,8 @@ func getUserStats(url string, command []string, author string) string {
 	// Format data and return as string
 	reply := "User: " + user_info.User + "\n"
 	for _, row := range user_info.Data {
-		datetime_split := strings.Split(row.Date, " ")
-		date := datetime_split[:4]
-		s := fmt.Sprintf("**Date**: %s **Minutes**: %s\n", strings.Join(date, " "), row.Activity)
+		
+		s := fmt.Sprintf("User %s has clocked in %s minutes over %d records", user_info.User, row.Activity, row.Records)
 		reply += s
 	}
 	return reply
