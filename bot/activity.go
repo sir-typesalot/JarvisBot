@@ -118,10 +118,10 @@ func getUserStats(url string, command []string, author string) string {
 	errorCheck(err, "Could not read body")
 
 	// Format data and return as string
-	reply := "User: " + user_info.User + "\n"
+	reply := ""
 	for _, row := range user_info.Data {
-		
-		s := fmt.Sprintf("User %s has clocked in %s minutes over %d records", user_info.User, row.Activity, row.Records)
+		s := fmt.Sprintf("User **%s** has clocked in total of **%s** minutes over %d records", 
+		user_info.User, row.Activity, row.Records)
 		reply += s
 	}
 	return reply
