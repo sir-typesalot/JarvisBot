@@ -26,18 +26,18 @@ func PomodorQueue(command []string, session *discordgo.Session, message *discord
 			fmt.Println("Non-existent timer, skipping cancellation")
 		}
 	} else {
-		var status int
+		var errMsg string
 		// Convert time values to numbers
 		timeLength, err := strconv.ParseFloat(command[1], 32)
 		// Get status of conversions
-		status = errorCheck(err, "Invalid time duration")
+		errMsg = errorCheck(err, "Invalid time duration")
 		interval, err := strconv.ParseFloat(command[2], 32)
-		status = errorCheck(err, "Invalid interval")
+		errMsg = errorCheck(err, "Invalid interval")
 		cycles, err := strconv.Atoi(command[3])
-		status = errorCheck(err, "Invalid cycle")
+		errMsg = errorCheck(err, "Invalid cycle")
 		// Check if conversion failed
-		if status != 200 {
-			sendMessage(session, message, "Please check your timer values", "")
+		if errMsg != "" {
+			sendMessage(session, message, errMsg, "")
 		} else {
 			sendMessage(session, message, "Your timer has started :hourglass:", "")
 			var userIdx int

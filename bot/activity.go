@@ -35,11 +35,9 @@ func ActivityQueue(command []string, author string) (response string, emoji stri
 	case "log":
 		response, emoji = logActivity(BASE_URL, command, author)
 	case "user-stats":
-		response = getUserStats(BASE_URL, command, author)
-		emoji = ""
+		response, emoji = getUserStats(BASE_URL, command, author)
 	case "scoreboard":
-		response = getScoreboard(BASE_URL, command)
-		emoji = ""
+		response, emoji = getScoreboard(BASE_URL, command)
 	}
 	return
 }
@@ -86,7 +84,7 @@ func getUserInfo(url string, command []string, author string) string {
 }
 
 // NOTE: Will likely need to chenge this soon, if the format of endpoint in API changes
-func getUserStats(url string, command []string, author string) string {
+func getUserStats(url string, command []string, author string) (string, string) {
 	// Create data structs
 	type DataRow struct {
 		Activity string `json:"total_activity"`
@@ -97,6 +95,9 @@ func getUserStats(url string, command []string, author string) string {
 		User string    `json:"user"`
 	}
 	var username string
+	var errMsg string
+	emoji := ""
+
 	// TODO: Really need to move this to a new function
 	if len(command) > 2 {
 		username = command[2]
@@ -107,16 +108,20 @@ func getUserStats(url string, command []string, author string) string {
 	endpoint := "/activity/user/"
 	completeURL := fmt.Sprint(url, endpoint, username, "/stats")
 	resp, err := http.Get(completeURL)
-	errorCheck(err, "Failed to GET API")
+	errMsg = errorCheck(err, "Failed to GET API")
 
 	defer resp.Body.Close()
 	body, err := ioutil.ReadAll(resp.Body)
-	errorCheck(err, "Failed to read body")
+	errMsg = errorCheck(err, "Failed to read body")
 	
 	user_info := UserInfo{}
 	err = json.Unmarshal(body, &user_info)
-	errorCheck(err, "Could not read body")
+	errMsg = errorCheck(err, "Could not read body")
 
+	if errMsg != "" {
+		emoji = "<:cat_cry:975383207996456980>"
+		return errMsg, emoji
+	}
 	// Format data and return as string
 	reply := ""
 	for _, row := range user_info.Data {
@@ -124,10 +129,10 @@ func getUserStats(url string, command []string, author string) string {
 		user_info.User, row.Activity, row.Records)
 		reply += s
 	}
-	return reply
+	return reply, emoji
 }
 
-func getScoreboard(url string, command []string) string {
+func getScoreboard(url string, command []string) (string, string) {
 	// Create data structs
 	type DataRow struct {
 		Activity string `json:"activity"`
@@ -141,19 +146,30 @@ func getScoreboard(url string, command []string) string {
 			TotalUsers int `json:"num_users"`
 		} `json:"metadata"`
 	}
+
+	var errMsg string
+	emoji := ""
+
 	// Craft endpoint
 	endpoint := "/activity/scoreboard"
 	completeURL := fmt.Sprint(url, endpoint)
 	resp, err := http.Get(completeURL)
-	errorCheck(err, "Failed to GET API")
+	// TODO: Instead of reassigning same value, maybe create slice or errors
+	// And then run a check through the list?
+	errMsg = errorCheck(err, "Failed to GET API")
 
 	defer resp.Body.Close()
 	body, err := ioutil.ReadAll(resp.Body)
-	errorCheck(err, "Failed to read body")
-
+	errMsg = errorCheck(err, "Failed to read body")
+	
 	user_info := UserInfo{}
 	err = json.Unmarshal(body, &user_info)
-	errorCheck(err, "Could not read body")
+	errMsg = errorCheck(err, "Could not read body")
+
+	if errMsg != "" {
+		emoji = "<:cat_cry:975383207996456980>"
+		return errMsg, emoji
+	}
 
 	var reply string
 	fmt.Printf("The date is %s\n", user_info.Data[0].Date)
@@ -164,7 +180,7 @@ func getScoreboard(url string, command []string) string {
 		s := fmt.Sprintf("**User**: %s **Date**: %s **Time**: %s\n\n", row.Username, strings.Join(date, " "), row.Activity)
 		reply += s
 	}
-	return reply
+	return reply, emoji
 }
 
 func createUser(url string, command []string, author string) (string, string) {

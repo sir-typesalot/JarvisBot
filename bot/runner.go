@@ -88,12 +88,12 @@ func sendMessage(s *discordgo.Session, m *discordgo.MessageCreate, reply string,
 }
 
 // Function to handle eror messages
-func errorCheck(err error, message string) int {
+func errorCheck(err error, message string) string {
 	if err != nil {
 		log.Fatal(message + err.Error())
-		return 401
+		return message
 	}
-	return 200
+	return ""
 }
 
 // BASIC COMMANDS
