@@ -125,7 +125,7 @@ func getUserStats(url string, command []string, author string) (string, string) 
 	// Format data and return as string
 	reply := ""
 	for _, row := range user_info.Data {
-		s := fmt.Sprintf("User **%s** has clocked in total of **%s** minutes over %d records", 
+		s := fmt.Sprintf("User **%s** has clocked in a total of **%s** minutes over %d records", 
 		user_info.User, row.Activity, row.Records)
 		reply += s
 	}

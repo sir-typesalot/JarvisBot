@@ -90,8 +90,9 @@ func sendMessage(s *discordgo.Session, m *discordgo.MessageCreate, reply string,
 // Function to handle eror messages
 func errorCheck(err error, message string) string {
 	if err != nil {
-		log.Fatal(message + err.Error())
-		return message
+		errMsg := message + err.Error()
+		log.Fatal(errMsg)
+		return errMsg
 	}
 	return ""
 }
