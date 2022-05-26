@@ -10,4 +10,4 @@ echo "Compiling new executable"
 go build -o bin
 echo "Starting nohup operation in background"
 echo "Logs are stored in logfile.txt"
-nohup ./bin/jarvis-bot > logfile.txt &
+nohup ./bin/jarvis-bot > logfile.txt 2>&1 &

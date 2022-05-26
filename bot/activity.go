@@ -189,15 +189,20 @@ func getScoreboard(url string, command []string) (string, string) {
 	}
 
 	var reply string
-	fmt.Printf("The date is %s\n", user_info.Data[0].Date)
-	for _, row := range user_info.Data {
+	if len(user_info.Data) > 0 {
+		fmt.Printf("The date is %s\n", user_info.Data[0].Date)
+		for _, row := range user_info.Data {
 
-		datetime_split := strings.Split(row.Date, " ")
-		date := datetime_split[:4]
-		s := fmt.Sprintf("**User**: %s **Date**: %s **Time**: %s\n\n", row.Username, strings.Join(date, " "), row.Activity)
-		reply += s
+			datetime_split := strings.Split(row.Date, " ")
+			date := datetime_split[:4]
+			s := fmt.Sprintf("**User**: %s **Date**: %s **Time**: %s\n\n", row.Username, strings.Join(date, " "), row.Activity)
+			reply += s
+		}
+		return reply, emoji
+	} else {
+		return "No Data for today, get up and do something", "<:risitas:975382207625584640>"
 	}
-	return reply, emoji
+	
 }
 
 func createUser(url string, command []string, author string) (string, string) {
