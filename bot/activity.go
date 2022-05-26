@@ -148,10 +148,27 @@ func getScoreboard(url string, command []string) (string, string) {
 	}
 
 	var errMsg string
+	var timeRange string
+	var endpoint string
+	
 	emoji := ""
 
+	if len(command) > 2 {
+		timeRange = command[2]
+	} else {
+		timeRange = "all-time"
+	}
+	
+	isValid := isValidRange(timeRange)
+
+	if isValid {
+		endpoint = "/activity/scoreboard?timeframe="+timeRange
+	} else {
+		emoji = "<:cat_cry:975383207996456980>"
+		return "Invalid time range", emoji
+	}
+	
 	// Craft endpoint
-	endpoint := "/activity/scoreboard"
 	completeURL := fmt.Sprint(url, endpoint)
 	resp, err := http.Get(completeURL)
 	// TODO: Instead of reassigning same value, maybe create slice or errors
@@ -274,4 +291,15 @@ func logActivity(url string, command []string, author string) (string, string) {
 	} else {
 		return "I didn't catch that, let's try again", "<:cat_cry:975383207996456980>"
 	}
+}
+
+func isValidRange(str string) bool {
+	validRanges := [3]string {"all-time", "week", "day"}
+	for _, v := range validRanges {
+		if v == str {
+			return true
+		}
+	}
+
+	return false
 }
