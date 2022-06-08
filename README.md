@@ -2,7 +2,7 @@
 Simple Discord Bot with Multiple Functionalities. Originally just a side project to tinker with Discord's API, I quickly found that I may have more uses to it than I thought. With an expanding list of functionalities, I am working to make this more usable and appealing for everyone to enhance many more Discord channels.
 
 ## Features added so far ##
-For more details on each of the commands, you can visit the [Wiki](https://github.com/sir-typesalot/JarvisBot/wiki)
+For more details on each of the commands, you can visit the [Wiki](https://github.com/sir-typesalot/JarvisBot/wiki) for more info.
 - Pomodor timer
 - Virtual Heads or Tails
 - Simple Addition and Subtraction
