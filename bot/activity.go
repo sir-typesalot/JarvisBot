@@ -195,7 +195,7 @@ func getScoreboard(url string, command []string) (string, string) {
 
 			datetime_split := strings.Split(row.Date, " ")
 			date := datetime_split[:4]
-			s := fmt.Sprintf("**User**: %s **Date**: %s **Time**: %s\n\n", row.Username, strings.Join(date, " "), row.Activity)
+			s := fmt.Sprintf("**User**: %s **Latest**: %s **Time**: %s\n\n", row.Username, strings.Join(date, " "), row.Activity)
 			reply += s
 		}
 		return reply, emoji
