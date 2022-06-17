@@ -10,7 +10,7 @@ import (
 func StocksQueue(command []string) (response string, emoji string) {
 	
 	switch command[1] {
-	case "market":
+	case "status":
 		response, emoji = marketStatus()
 	case "symbol":
 		response, emoji = "", ""

@@ -69,7 +69,7 @@ func messageHandler(session *discordgo.Session, message *discordgo.MessageCreate
 	case "!minus":
 		// Send reply to user so they are tagged
 		sendMessage(session, message, "pong", "")
-	case "!stock":
+	case "!market":
 		reply, emoji := StocksQueue(split_command)
 		sendMessage(session, message, reply, emoji)
 	case "!activity":
