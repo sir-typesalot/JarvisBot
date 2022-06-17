@@ -70,7 +70,8 @@ func messageHandler(session *discordgo.Session, message *discordgo.MessageCreate
 		// Send reply to user so they are tagged
 		sendMessage(session, message, "pong", "")
 	case "!stock":
-		// idk
+		reply, emoji := StocksQueue(split_command)
+		sendMessage(session, message, reply, emoji)
 	case "!activity":
 		reply, emoji := ActivityQueue(split_command, message.Author.Username)
 		sendMessage(session, message, reply, emoji)
