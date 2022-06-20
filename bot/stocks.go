@@ -5,7 +5,13 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"os"
+
+	"github.com/joho/godotenv"
 )
+
+// Polygon.io URL for market data
+const Polygon_URL = "https://api.polygon.io/v1";
 
 func StocksQueue(command []string) (response string, emoji string) {
 	
@@ -40,8 +46,14 @@ func marketStatus() (string, string) {
 	var errMsg string
 	var emoji string
 
+	err := godotenv.Load()
+	// Grab token for API
+	apiToken := os.Getenv("POLY_API_TOKEN")
+	// Craft URL
+	url := fmt.Sprintf("%s/marketstatus/now?apiKey=%s", Polygon_URL, apiToken)
+
 	// GET request to API
-	resp, err := http.Get("https://api.polygon.io/v1/marketstatus/now?apiKey=HFL_1uqtU8zFVeJhl09fcWTE9sSNRcSw")
+	resp, err := http.Get(url)
 	errMsg = errorCheck(err, "Failed to GET resource")
 	// Delay closing of resp Body
     defer resp.Body.Close()
@@ -59,8 +71,14 @@ func marketStatus() (string, string) {
 	}
 	// TODO: Pretty this output up
 	reply := ""
-	s := fmt.Sprintf("Market Status\nMarket - %s\nNASDAQ - %s\nNYSE - %s", 
-		stockInfo.Market, stockInfo.Exchanges.NASDAQ, stockInfo.Exchanges.NYSE)
+	if stockInfo.Market == "closed" { 
+		emoji = ":white_check_mark:"
+	} else {
+		emoji = ":octagonal_sign:"
+	}
+	s := fmt.Sprintf("Market Status - %s %s\nNASDAQ - %s\nNYSE - %s\nForex - %s\nCrypto - %s", 
+		stockInfo.Market, emoji, stockInfo.Exchanges.NASDAQ, stockInfo.Exchanges.NYSE,
+		stockInfo.Currencies.Fx, stockInfo.Currencies.Crypto)
 	reply += s
 	return reply, emoji
 }
