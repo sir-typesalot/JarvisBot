@@ -71,7 +71,7 @@ func marketStatus() (string, string) {
 	}
 	// TODO: Pretty this output up
 	reply := ""
-	if stockInfo.Market == "closed" { 
+	if stockInfo.Market == "open" { 
 		emoji = ":white_check_mark:"
 	} else {
 		emoji = ":octagonal_sign:"
@@ -80,5 +80,5 @@ func marketStatus() (string, string) {
 		stockInfo.Market, emoji, stockInfo.Exchanges.NASDAQ, stockInfo.Exchanges.NYSE,
 		stockInfo.Currencies.Fx, stockInfo.Currencies.Crypto)
 	reply += s
-	return reply, emoji
+	return reply, ""
 }
