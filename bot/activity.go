@@ -13,8 +13,6 @@ import (
 	"github.com/joho/godotenv"
 )
 
-// TODO: For now, just trimmed the date strings - should be a better solution
-// Format the date strings
 func ActivityQueue(command []string, author string) (response string, emoji string) {
 
 	// Load dotenv
@@ -83,7 +81,6 @@ func getUserInfo(url string, command []string, author string) string {
 	return reply
 }
 
-// NOTE: Will likely need to chenge this soon, if the format of endpoint in API changes
 func getUserStats(url string, command []string, author string) (string, string) {
 	// Create data structs
 	type DataRow struct {
@@ -171,8 +168,6 @@ func getScoreboard(url string, command []string) (string, string) {
 	// Craft endpoint
 	completeURL := fmt.Sprint(url, endpoint)
 	resp, err := http.Get(completeURL)
-	// TODO: Instead of reassigning same value, maybe create slice or errors
-	// And then run a check through the list?
 	errMsg = errorCheck(err, "Failed to GET API")
 
 	defer resp.Body.Close()
@@ -282,9 +277,6 @@ func logActivity(url string, command []string, author string) (string, string) {
 	defer resp.Body.Close()
 	body, err := ioutil.ReadAll(resp.Body)
 	errorCheck(err, "Failed to read body")
-
-	// bodyString := string(body)
-	// fmt.Print(bodyString)
 
 	bodyJson := RespBody{}
 	err = json.Unmarshal(body, &bodyJson)
