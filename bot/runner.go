@@ -3,7 +3,6 @@ package bot
 import (
 	"math/rand"
 	"fmt"
-	"log"
 	"os"
 	"strings"
 	"time"
@@ -15,25 +14,29 @@ import (
 var BotId string
 
 func Run() {
+
+	var errList []error
+
 	err := godotenv.Load()
-	errorCheck(err, "Failed to load .env file")
+	errList = errorCheck(err, "Failed to load .env file", errList)
 	// Grab token and start up bot
 	token := os.Getenv("BOT_TOKEN")
 	fmt.Println(token)
 	bot, err := discordgo.New("Bot " + token)
-	errorCheck(err, "Error authenticating bot token")
+	errList = errorCheck(err, "Error authenticating bot token", errList)
 	// In this example, we only care about receiving message events.
 	bot.Identify.Intents = discordgo.IntentsGuildMessages
 	// Assign the bot a user
 	u, err := bot.User("@me")
-	errorCheck(err, "Error creating bot ID")
+	errList = errorCheck(err, "Error creating bot ID", errList)
 	// Give bot an ID
 	BotId = u.ID
 	// Add handler for messages
 	bot.AddHandler(messageHandler)
 	// Open bot
 	err = bot.Open()
-	errorCheck(err, "Error trying to run bot")
+	errList = errorCheck(err, "Error trying to run bot", errList)
+
 	// If every thing works fine we will be printing this.
 	fmt.Println("Bot is running !")
 }
@@ -89,13 +92,14 @@ func sendMessage(s *discordgo.Session, m *discordgo.MessageCreate, reply string,
 }
 
 // Function to handle eror messages
-func errorCheck(err error, message string) string {
+func errorCheck(err error, message string, errorList []error) []error {
 	if err != nil {
-		errMsg := message + " " + err.Error()
-		log.Fatal(errMsg)
-		return errMsg
+		dt := time.Now()
+		message := fmt.Sprintf("%s: ERROR - %s (%s)", dt.Format("01-02-2006 15:04:05"), message, err.Error())
+		fmt.Println(message)
+		errorList = append(errorList, err)
 	}
-	return ""
+	return errorList
 }
 
 // BASIC COMMANDS

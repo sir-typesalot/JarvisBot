@@ -15,9 +15,14 @@ import (
 
 func ActivityQueue(command []string, author string) (response string, emoji string) {
 
+	var errList []error
 	// Load dotenv
 	err := godotenv.Load()
-	errorCheck(err, "Failed to load .env file")
+	errList = errorCheck(err, "Failed to load .env file", errList)
+	if len(errList) > 0 {
+		emoji = "<:cat_cry:975383207996456980>"
+		return "Looks like we're missing some secrets ", emoji
+	}
 	// Grab URL
 	BASE_URL := os.Getenv("EXERCISE_API_URL")
 	// TODO: improvise the functions here, maybe create a struct with url, comm, author?
@@ -26,8 +31,7 @@ func ActivityQueue(command []string, author string) (response string, emoji stri
 	}
 	switch command[1] {
 	case "user-info":
-		response = getUserInfo(BASE_URL, command, author)
-		emoji = ""
+		response, emoji = getUserInfo(BASE_URL, command, author)
 	case "create-user":
 		response, emoji = createUser(BASE_URL, command, author)
 	case "log":
@@ -40,7 +44,7 @@ func ActivityQueue(command []string, author string) (response string, emoji stri
 	return
 }
 
-func getUserInfo(url string, command []string, author string) string {
+func getUserInfo(url string, command []string, author string) (string, string) {
 	// Create struct to match payload
 	type UserInfo struct {
 		Data struct {
@@ -51,8 +55,8 @@ func getUserInfo(url string, command []string, author string) string {
 		} `json:"data"`
 	}
 	var username string
-	// Check if username has been provided, if not, use author
-	// TODO: Move this to a function (that struct is looking kinda good rn)
+	var errList []error
+
 	if len(command) > 2 {
 		username = command[2]
 	} else {
@@ -63,22 +67,26 @@ func getUserInfo(url string, command []string, author string) string {
 	completeURL := fmt.Sprint(url, endpoint, username)
 	// GET from API and check for err
 	resp, err := http.Get(completeURL)
-	errorCheck(err, "Failed to GET API")
+	errList = errorCheck(err, "Failed to GET API", errList)
 
 	defer resp.Body.Close()
 	body, err := ioutil.ReadAll(resp.Body)
-	errorCheck(err, "Failed to read body")
+	errList = errorCheck(err, "Failed to read body", errList)
 	// Unmarshal result, check for err
 	user_info := UserInfo{}
 	err = json.Unmarshal(body, &user_info)
-	errorCheck(err, "Could not read body")
-
+	errList = errorCheck(err, "Could not read body", errList)
+	
+	if len(errList) > 0 {
+		emoji := "<:cat_cry:975383207996456980>"
+		return "We're having some problems fetching this data right now ", emoji
+	}
 	// Log output and return data as string
 	fmt.Printf("The username is %s", user_info.Data.Username)
 	reply := fmt.Sprintf(
 		"**Username**: %s\n**UserID**: %d\n**Registered**: %s",
 		user_info.Data.Username, user_info.Data.ID, user_info.Data.CreateTime)
-	return reply
+	return reply, ""
 }
 
 func getUserStats(url string, command []string, author string) (string, string) {
@@ -91,8 +99,9 @@ func getUserStats(url string, command []string, author string) (string, string) 
 		Data []DataRow `json:"data"`
 		User string    `json:"user"`
 	}
+
+	var errList []error
 	var username string
-	var errMsg string
 	emoji := ""
 
 	// TODO: Really need to move this to a new function
@@ -105,19 +114,19 @@ func getUserStats(url string, command []string, author string) (string, string) 
 	endpoint := "/activity/user/"
 	completeURL := fmt.Sprint(url, endpoint, username, "/stats")
 	resp, err := http.Get(completeURL)
-	errMsg = errorCheck(err, "Failed to GET API")
+	errList = errorCheck(err, "Failed to GET API", errList)
 
 	defer resp.Body.Close()
 	body, err := ioutil.ReadAll(resp.Body)
-	errMsg = errorCheck(err, "Failed to read body")
+	errList = errorCheck(err, "Failed to read body", errList)
 	
 	user_info := UserInfo{}
 	err = json.Unmarshal(body, &user_info)
-	errMsg = errorCheck(err, "Could not read body")
+	errList = errorCheck(err, "Could not read body", errList)
 
-	if errMsg != "" {
+	if len(errList) > 0 {
 		emoji = "<:cat_cry:975383207996456980>"
-		return errMsg, emoji
+		return "We're having some problems fetching this data right now ", emoji
 	}
 	// Format data and return as string
 	reply := ""
@@ -144,9 +153,9 @@ func getScoreboard(url string, command []string) (string, string) {
 		} `json:"metadata"`
 	}
 
-	var errMsg string
 	var timeRange string
 	var endpoint string
+	var errList []error
 	
 	emoji := ""
 
@@ -168,19 +177,19 @@ func getScoreboard(url string, command []string) (string, string) {
 	// Craft endpoint
 	completeURL := fmt.Sprint(url, endpoint)
 	resp, err := http.Get(completeURL)
-	errMsg = errorCheck(err, "Failed to GET API")
+	errList = errorCheck(err, "Failed to GET API", errList)
 
 	defer resp.Body.Close()
 	body, err := ioutil.ReadAll(resp.Body)
-	errMsg = errorCheck(err, "Failed to read body")
+	errList = errorCheck(err, "Failed to read body", errList)
 	
 	user_info := UserInfo{}
 	err = json.Unmarshal(body, &user_info)
-	errMsg = errorCheck(err, "Could not read body")
+	errList = errorCheck(err, "Could not read body", errList)
 
-	if err != nil {
+	if len(errList) > 0 {
 		emoji = "<:cat_cry:975383207996456980>"
-		return errMsg, emoji
+		return "We're having some problems fetching this data right now ", emoji
 	}
 
 	var reply string
@@ -216,23 +225,31 @@ func createUser(url string, command []string, author string) (string, string) {
 		username = author
 	}
 
+	var errList []error
+
 	// Create json data to POST to API
 	values := map[string]string{"username": username}
 	json_data, err := json.Marshal(values)
-	errorCheck(err, "Error parsing values to JSON")
+	errList = errorCheck(err, "Error parsing values to JSON", errList)
 	// Craft endpoint and POST
 	endpoint := "/activity/user/create"
 	completeURL := fmt.Sprint(url, endpoint)
 	resp, err := http.Post(completeURL, "application/json", bytes.NewBuffer(json_data))
-	errorCheck(err, "Failed to GET API")
+	errList = errorCheck(err, "Failed to GET API", errList)
 
 	defer resp.Body.Close()
 	body, err := ioutil.ReadAll(resp.Body)
-	errorCheck(err, "Failed to read body")
+	errList = errorCheck(err, "Failed to read body", errList)
 
 	bodyJson := RespBody{}
 	err = json.Unmarshal(body, &bodyJson)
-	errorCheck(err, "Could not read body")
+	errList = errorCheck(err, "Could not read body", errList)
+
+	if len(errList) > 0 {
+		emoji := "<:cat_cry:975383207996456980>"
+		return "Encountered some problems, likely the API's fault!  ", emoji
+	}
+
 	// Return response based on status codes
 	fmt.Printf("User created with code %d\n", bodyJson.Status)
 	switch bodyJson.Status {
@@ -256,6 +273,9 @@ func logActivity(url string, command []string, author string) (string, string) {
 		Status string `json:"status"`
 		Code   int    `json:"code"`
 	}
+
+	var errList []error
+
 	// Check if minutes are in command
 	if len(command) < 3 {
 		return "You forgot to add the minutes ", "<:laughingtom:975383179601010718>"
@@ -263,24 +283,30 @@ func logActivity(url string, command []string, author string) (string, string) {
 	// Convert to int
 	minutes_str := command[2]
 	minutes, err := strconv.Atoi(minutes_str)
-	errorCheck(err, "Cannot convert str to int")
+	errList = errorCheck(err, "Cannot convert str to int", errList)
 	// Create json to POST
 	values := map[string]int{"minutes": minutes}
 	json_data, err := json.Marshal(values)
-	errorCheck(err, "Error parsing values to JSON")
+	errList = errorCheck(err, "Error parsing values to JSON", errList)
 	// Craft endpoint and send
 	endpoint := "/activity/user/"
 	completeURL := fmt.Sprint(url, endpoint, author, "/log-activity")
 	resp, err := http.Post(completeURL, "application/json", bytes.NewBuffer(json_data))
-	errorCheck(err, "Failed to GET API")
+	errList = errorCheck(err, "Failed to GET API", errList)
 
 	defer resp.Body.Close()
 	body, err := ioutil.ReadAll(resp.Body)
-	errorCheck(err, "Failed to read body")
+	errList = errorCheck(err, "Failed to read body", errList)
 
 	bodyJson := RespBody{}
 	err = json.Unmarshal(body, &bodyJson)
-	errorCheck(err, "Could not read body")
+	errList = errorCheck(err, "Could not read body", errList)
+
+	if len(errList) > 0 {
+		emoji := "<:cat_cry:975383207996456980>"
+		return "Looks like the API is down, let's try this later ", emoji
+	}
+
 	// Return response based on status code
 	fmt.Printf("Logged activity for user %s\n", author)
 	if bodyJson.Code == 200 {

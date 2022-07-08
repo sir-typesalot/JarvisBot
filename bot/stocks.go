@@ -43,10 +43,11 @@ func marketStatus() (string, string) {
 		} `json:"currencies"`
 	}
 	
-	var errMsg string
+	var errList []error
 	var emoji string
 
 	err := godotenv.Load()
+	errList = errorCheck(err, "Failed to load .env file", errList)
 	// Grab token for API
 	apiToken := os.Getenv("POLY_API_TOKEN")
 	// Craft URL
@@ -54,20 +55,20 @@ func marketStatus() (string, string) {
 
 	// GET request to API
 	resp, err := http.Get(url)
-	errMsg = errorCheck(err, "Failed to GET resource")
+	errList = errorCheck(err, "Failed to GET resource", errList)
 	// Delay closing of resp Body
     defer resp.Body.Close()
 	// Read response in
 	body, err := ioutil.ReadAll(resp.Body)
-	errMsg = errorCheck(err, "Failed to read body")
+	errList = errorCheck(err, "Failed to read body", errList)
 	
 	stockInfo := Response{}
 	err = json.Unmarshal(body, &stockInfo)
-	errMsg = errorCheck(err, "Could not read body")
+	errList = errorCheck(err, "Could not read body", errList)
 
-	if errMsg != "" {
+	if len(errList) > 0 {
 		emoji = "<:cat_cry:975383207996456980>"
-		return errMsg, emoji
+		return "We're having some issues getting data from the API ", emoji
 	}
 	// TODO: Pretty this output up
 	reply := ""
