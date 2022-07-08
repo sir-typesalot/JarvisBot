@@ -178,7 +178,7 @@ func getScoreboard(url string, command []string) (string, string) {
 	err = json.Unmarshal(body, &user_info)
 	errMsg = errorCheck(err, "Could not read body")
 
-	if errMsg != "" {
+	if err != nil {
 		emoji = "<:cat_cry:975383207996456980>"
 		return errMsg, emoji
 	}
@@ -195,7 +195,7 @@ func getScoreboard(url string, command []string) (string, string) {
 		}
 		return reply, emoji
 	} else {
-		return "No Data for today, get up and do something", "<:risitas:975382207625584640>"
+		return "No Data, get up and do something", "<:risitas:975382207625584640>"
 	}
 	
 }
