@@ -1,8 +1,9 @@
 package bot
 
 import (
-	"math/rand"
 	"fmt"
+	"log"
+	"math/rand"
 	"os"
 	"strings"
 	"time"
@@ -94,9 +95,7 @@ func sendMessage(s *discordgo.Session, m *discordgo.MessageCreate, reply string,
 // Function to handle eror messages
 func errorCheck(err error, message string, errorList []error) []error {
 	if err != nil {
-		dt := time.Now()
-		message := fmt.Sprintf("%s: ERROR - %s (%s)", dt.Format("01-02-2006 15:04:05"), message, err.Error())
-		fmt.Println(message)
+		log.Printf("ERROR - %s (%v)", message, err)
 		errorList = append(errorList, err)
 	}
 	return errorList
